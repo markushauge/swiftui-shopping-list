@@ -2,13 +2,28 @@ import SwiftUI
 
 struct Product {
     var name: String
+    var completed: Bool = false
 }
 
 struct ProductRow : View {
     @State var product: Product
     
+    func handleClick() {
+        product.completed = !product.completed
+    }
+    
     var body: some View {
-        Text(product.name)
+        Button(action: handleClick) {
+            HStack {
+                Text(product.name)
+                Spacer()
+                
+                if product.completed {
+                    Text("Completed")
+                        .color(.gray)
+                }
+            }
+        }
     }
 }
 
@@ -32,7 +47,7 @@ struct App : View {
     var body: some View {
         NavigationView {
             ProductList(products: products)
-                .navigationBarTitle(Text("Shopping List"))
+            .navigationBarTitle(Text("Shopping List"))
         }
     }
 }
