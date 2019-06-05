@@ -52,7 +52,7 @@ struct ProductAdd : View {
     
     var body: some View {
         HStack {
-            TextField($text)
+            TextField($text, placeholder: Text("Product"))
                 .padding(10)
                 .background(gray(brightness: 0.95), cornerRadius: 10)
             Button(action: handleClick) {
@@ -73,7 +73,7 @@ struct App : View {
         NavigationView {
             VStack {
                 ProductAdd(onAdd: handleAdd)
-                    .padding(20)
+                    .padding()
                 ProductList(products: $products)
             }
             .navigationBarTitle(Text("Shopping List"))
