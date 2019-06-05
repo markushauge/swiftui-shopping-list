@@ -23,7 +23,7 @@ struct ProductRow : View {
                 Spacer()
                 
                 if product.completed {
-                    Text("Completed")
+                    Text("✓")
                         .color(.gray)
                 }
             }
