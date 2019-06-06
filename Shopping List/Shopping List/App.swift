@@ -6,23 +6,23 @@ func gray(brightness: Double) -> Color {
 
 struct Product {
     var name: String
-    var completed: Bool = false
+    var checked: Bool
 }
 
 struct ProductRow : View {
     @State var product: Product
-    
+
     func handleClick() {
-        product.completed = !product.completed
+        product.checked = !product.checked
     }
-    
+
     var body: some View {
         Button(action: handleClick) {
             HStack {
                 Text(product.name)
-                Spacer()
-                
-                if product.completed {
+
+                if product.checked {
+                    Spacer()
                     Text("✓")
                         .color(.gray)
                 }
@@ -32,11 +32,21 @@ struct ProductRow : View {
 }
 
 struct ProductList : View {
-    @Binding var products: [Product]
+    @State var products: [Product] = []
     
+    func handleAdd(name: String) {
+        products.append(Product(name: name, checked: false))
+    }
+
     var body: some View {
-        List(products.identified(by: \.name)) { product in
-            ProductRow(product: product)
+        VStack {
+            ProductAdd(onAdd: handleAdd)
+                .padding()
+            
+            List(products.identified(by: \.name)) { product in
+                ProductRow(product: product)
+            }
+            .focusable(true)
         }
     }
 }
@@ -44,17 +54,22 @@ struct ProductList : View {
 struct ProductAdd : View {
     let onAdd: (String) -> Void
     @State private var text: String = ""
-    
+
     func handleClick() {
+        if text.trimmingCharacters(in: .whitespaces).isEmpty {
+            return
+        }
+        
         onAdd(text)
         text = ""
     }
-    
+
     var body: some View {
         HStack {
             TextField($text, placeholder: Text("Product"))
                 .padding(10)
                 .background(gray(brightness: 0.95), cornerRadius: 10)
+            
             Button(action: handleClick) {
                 Text("Add")
             }
@@ -63,20 +78,10 @@ struct ProductAdd : View {
 }
 
 struct App : View {
-    @State var products: [Product] = []
-    
-    func handleAdd(name: String) {
-        products.append(Product(name: name))
-    }
-    
     var body: some View {
         NavigationView {
-            VStack {
-                ProductAdd(onAdd: handleAdd)
-                    .padding()
-                ProductList(products: $products)
-            }
-            .navigationBarTitle(Text("Shopping List"))
+            ProductList()
+                .navigationBarTitle(Text("Shopping List"))
         }
     }
 }
